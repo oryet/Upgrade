@@ -1,8 +1,9 @@
 import Protocol.ly_Json as jsonframe
 import time
-
+from UpgradeMakeFrame import _strReverse
 
 def upgradeRecvDataToMap(index, bmapstr, self):
+    bmapstr = _strReverse(bmapstr)
     for i in range(0, len(bmapstr), 2):
         b = bmapstr[i:i + 2]
         n = int(b, 16)
@@ -43,3 +44,8 @@ def upgradeRecvProc(self):
             print(recv)
             if 'linkNum' not in recv:
                 upgradeDataProc(recv, self)
+
+def upgradeGetCurPackNum(self):
+    for i in range(len(self.uplist["bmap"])):
+        if self.uplist["bmap"][i] == 0:
+            return i

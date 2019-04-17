@@ -7,10 +7,13 @@ FILE_LEN = 0x000173ed
 if FILE_LEN%128 == 0:
     FILE_PACK_NUM = hex((int)(FILE_LEN / 128))
 else:
-    FILE_PACK_NUM = hex((int)(FILE_LEN/128) + 1)
+    FILE_PACK_NUM = hex((int)(FILE_LEN / 128) + 1)
 FILE_PACK_NUM = str(FILE_PACK_NUM).replace("0x", "0000")[-4:]
 FILE_LEN = hex(FILE_LEN).replace("0x", "00000000")[-8:]
 FILE_CRC = "1a4c"
+
+def upgradeTotalPackNum():
+    return int(FILE_PACK_NUM, 16)
 
 
 def upgradeCheckVision():
@@ -44,7 +47,7 @@ def upgradeStart():
     data = "04A00502"
     # 产品类型 + 版本日期 + 软件版本 + 硬件版本 + 文件总长 + 总包数 + 包长度 + 文件CRC校验 + 升级模式字
     # value = "28210000#18121716#01010002#01000000#0001f9c1#03f4#80#75d3#0000"
-    value = "28210000#19040909#01000099#01010000#" + FILE_LEN + "#" +  FILE_PACK_NUM + "#" + "80" +  FILE_CRC + "#" + "0000"
+    value = "28210000#19040909#01000099#01010000#" + FILE_LEN + "#" +  FILE_PACK_NUM + "#" + "80" + "#" +  FILE_CRC + "#" + "0000"
     List = dict(zip([data], [value]))
     VList = []
     VList += ["UpDate"]

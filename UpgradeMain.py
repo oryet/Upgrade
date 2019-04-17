@@ -15,6 +15,7 @@ class socketupgrade():
         bitmap = [0] * 1024
         self.uplist = {"ip": "", "port": "", "bmap": bitmap}
         self.ADDRESS = ('192.168.127.16', 50165)  # 绑定地址
+        self.upgradeCnt = 0
 
 
     def upgradeStartServer(self):
@@ -52,7 +53,6 @@ class socketupgrade():
 
     def upgradeProc(self, f):
         # 启动升级服务器
-
         self.upgradeStartServer()
 
         # 启动数据处理线程
@@ -72,16 +72,34 @@ class socketupgrade():
                     n = self.upgradehandle(nSocket)
                     if n == 1 or n > 10:
                         self.state = 1
-                        if n == 1:  # 重启升级，包序号清零
-                            i = 0
-                else:
-                    senddata = mf.upgradeSendFile(i + 1, f[i])  # 读文件从0开始, 包序号从1开始
-                    i += 1
-                    print("升级ing, 当前包序号：", i)
+                elif self.state == 2:  # 自动查漏包1
+                    senddata = mf.upgradeCheckPack(1)
                     socketServer.SocketSend(nSocket, senddata)
-                    print(senddata)
-                    if (i > 0x03F4) or (i == 10) or (i > 10 and i >= n):
-                        self.state = 0
+                    self.state = 3
+                elif self.state == 3:  # 自动查漏包2
+                    senddata = mf.upgradeCheckPack(2)
+                    socketServer.SocketSend(nSocket, senddata)
+                    self.state = 4
+                elif self.state == 4:  # 自动查版本号
+                    senddata = mf.upgradeCheckVision()
+                    socketServer.SocketSend(nSocket, senddata)
+                    self.state = 1
+                    self.upgradeCnt += 1
+                    if self.upgradeCnt > 5:
+                        self.state = 0  # 大于自动尝试次数，进入手动模式
+                else:
+                    i = df.upgradeGetCurPackNum(self)
+                    if i < mf.upgradeTotalPackNum():
+                        senddata = mf.upgradeSendFile(i + 1, f[i])  # 读文件从0开始, 包序号从1开始
+                        self.uplist["bmap"][i] = 1
+                        print("升级ing, 当前包序号：", i)
+                        socketServer.SocketSend(nSocket, senddata)
+                        print(senddata)
+                    if (i == 10) or (i > 10 and i >= n):
+                        self.state = 0 # 手动
+                    elif (i >= mf.upgradeTotalPackNum()):
+                        self.state = 2 # 自动查漏包
+
 
 
 if __name__ == '__main__':
