@@ -51,7 +51,10 @@ def SocketSend(n, data):
     if 0 < con.GetLinkNum():
         if n < con.GetLinkNum():
             conn = con.GetConn(n)
-            conn.sendall(bytes(data + " ", encoding="utf-8"))
+            try:
+                conn.sendall(bytes(data + " ", encoding="utf-8"))
+            except:
+                pass
 
 def ServerMonitor(qRecv):
     linkNum = 0

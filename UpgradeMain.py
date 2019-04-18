@@ -105,7 +105,8 @@ class socketupgrade():
 
 if __name__ == '__main__':
     # file = u'F://Work//微功率无线软件提交//NLY1502//HW V1.1_V1.1.0.2//NLY1502-02-SW1300-181210-02//IotMeter_V1.1.0.2(181210).bin'
-    file = u'D://02 Ucos-II//03 系统//17 TLY2821//trunk//Project//IAR7.8//Debug//Exe//TLY2821_V1.0.0.99.bin'
+    # file = u'D://02 Ucos-II//03 系统//17 TLY2821//trunk//Project//IAR7.8//Debug//Exe//TLY2821_V1.0.0.99.bin'
+    file = u'F:\Work\软件提交\TLY2821\V1.0.0.1\TLY2821-00-SW0000-190409-01\TLY2821-update-V01000099-190409.bin'
 
     # 读升级bin文件
     f = ReadBinFile(file)

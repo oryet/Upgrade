@@ -32,7 +32,7 @@ def upgradeCheckPack(sindex):
     prtl = judgePrtl("LY_JSON")
     data = "04A00503"
     # value = "594C#03#03F4#000" + sindex  # 索引号从1开始      厂家标识 + 设备类型 + 总包数 + 当前包序号 + 单包数据单元
-    value = FILE_MANUIDEN + "#" + FILE_DEV_TYPE + "#" + FILE_PACK_NUM + "#" + "#000" + sindex  # 索引号从1开始      厂家标识 + 设备类型 + 总包数 + 当前包序号 + 单包数据单元
+    value = FILE_MANUIDEN + "#" + FILE_DEV_TYPE + "#" + FILE_PACK_NUM + "#000" + sindex  # 索引号从1开始      厂家标识 + 设备类型 + 总包数 + 当前包序号 + 单包数据单元
 
     List = dict(zip([data], [value]))
     VList = []
