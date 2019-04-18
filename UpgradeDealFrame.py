@@ -28,6 +28,8 @@ def upgradeDataProc(recv, self):
     if "ip" and "port" in data:
         self.uplist["ip"] = data["ip"]
         self.uplist["port"] = data["port"]
+        if "DataTime" not in data["recvData"]:
+            return
     if "04A00503" in data["recvData"]["DataValue"]:
         if data["recvData"]["DataValue"]["04A00503"][13:17] == "0001":
             bstr = data["recvData"]["DataValue"]["04A00503"][18:]

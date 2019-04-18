@@ -73,11 +73,11 @@ class socketupgrade():
                     if n == 1 or n > 10:
                         self.state = 1
                 elif self.state == 2:  # 自动查漏包1
-                    senddata = mf.upgradeCheckPack(1)
+                    senddata = mf.upgradeCheckPack("1")
                     socketServer.SocketSend(nSocket, senddata)
                     self.state = 3
                 elif self.state == 3:  # 自动查漏包2
-                    senddata = mf.upgradeCheckPack(2)
+                    senddata = mf.upgradeCheckPack("2")
                     socketServer.SocketSend(nSocket, senddata)
                     self.state = 4
                 elif self.state == 4:  # 自动查版本号
