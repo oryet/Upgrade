@@ -38,6 +38,7 @@ class socketupgrade():
 
         if (n == 1):
             senddata = mf.upgradeStart()
+            self.upgradeCnt = 0
         elif (n == 2):
             strindex = input("请输入需要查询的包序号：")
             senddata = mf.upgradeCheckPack(strindex)
