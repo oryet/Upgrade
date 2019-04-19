@@ -1,5 +1,6 @@
 import json
 import re
+import public as pfun
 
 g_cnt = 0
 
@@ -47,21 +48,6 @@ def JsonDealFrame(recvframe, senddata, answer):
     return -1, None
 
 
-# CRC16/IBM x16 + x15 + x2 + 1
-def crc16(x, invert):
-    a = 0
-    b = 0xA001
-    for byte in x:
-        a ^= ord(byte)
-        for i in range(8):
-            last = a % 2
-            a >>= 1
-            if last == 1:
-                a ^= b
-    s = hex(a).upper()
-    return s[4:6] + s[2:4] if invert == True else s[2:4] + s[4:6]
-
-
 def JsonMakeFrame(Value):
     global g_cnt
     g_cnt = g_cnt + 1
@@ -69,7 +55,7 @@ def JsonMakeFrame(Value):
             "DataValue":Value[1]}
 
     dv = str(Value[1])[1:-1].replace(" ", "")  # 去大括号和空格
-    dv = "0000" + crc16(dv, False)
+    dv = "0000" + pfun.crc16str(0, dv, False)
     data["CRC"] = dv[-4:]
 
     # 将python对象data转换json对象

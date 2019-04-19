@@ -1,9 +1,9 @@
 import Protocol.ly_Json as jsonframe
 import time
-from UpgradeMakeFrame import _strReverse
+import public as pfun
 
 def upgradeRecvDataToMap(index, bmapstr, self):
-    bmapstr = _strReverse(bmapstr)
+    bmapstr = pfun._strReverse(bmapstr)
     for i in range(0, len(bmapstr), 2):
         b = bmapstr[i:i + 2]
         n = int(b, 16)

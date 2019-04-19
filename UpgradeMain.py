@@ -3,18 +3,19 @@
 import threading
 import queue
 import time
-from UpgradeReadfile import ReadBinFile
+from UpgradeReadfile import UpgradeReadfile as rf
 import socketServer
-import UpgradeMakeFrame as mf
+from UpgradeMakeFrame import upgradeMakeFrame
 import UpgradeDealFrame as df
 
 class socketupgrade():
     def __init__(self):
         self.qRecv = queue.Queue()
+        self.mf = upgradeMakeFrame()
         self.state = 0
         bitmap = [0] * 1024
         self.uplist = {"ip": "", "port": "", "bmap": bitmap}
-        self.ADDRESS = ('192.168.127.16', 50165)  # 绑定地址
+        self.ADDRESS = ('192.168.127.16', 8888)  # 绑定地址
         self.upgradeCnt = 0
 
 
@@ -37,13 +38,13 @@ class socketupgrade():
         senddata = ""
 
         if (n == 1):
-            senddata = mf.upgradeStart()
+            senddata = self.mf.upgradeStart()
             self.upgradeCnt = 0
         elif (n == 2):
             strindex = input("请输入需要查询的包序号：")
-            senddata = mf.upgradeCheckPack(strindex)
+            senddata = self.mf.upgradeCheckPack(strindex)
         elif (n == 3):
-            senddata = mf.upgradeCheckVision()
+            senddata = self.mf.upgradeCheckVision()
         else:
             pass
 
@@ -52,7 +53,7 @@ class socketupgrade():
             print(senddata)
         return n
 
-    def upgradeProc(self, f):
+    def upgradeProc(self):
         # 启动升级服务器
         self.upgradeStartServer()
 
@@ -74,15 +75,15 @@ class socketupgrade():
                     if n == 1 or n > 10:
                         self.state = 1
                 elif self.state == 2:  # 自动查漏包1
-                    senddata = mf.upgradeCheckPack("1")
+                    senddata = self.mf.upgradeCheckPack("1")
                     socketServer.SocketSend(nSocket, senddata)
                     self.state = 3
                 elif self.state == 3:  # 自动查漏包2
-                    senddata = mf.upgradeCheckPack("2")
+                    senddata = self.mf.upgradeCheckPack("2")
                     socketServer.SocketSend(nSocket, senddata)
                     self.state = 4
                 elif self.state == 4:  # 自动查版本号
-                    senddata = mf.upgradeCheckVision()
+                    senddata = self.mf.upgradeCheckVision()
                     socketServer.SocketSend(nSocket, senddata)
                     self.state = 1
                     self.upgradeCnt += 1
@@ -90,15 +91,15 @@ class socketupgrade():
                         self.state = 0  # 大于自动尝试次数，进入手动模式
                 else:
                     i = df.upgradeGetCurPackNum(self)
-                    if i < mf.upgradeTotalPackNum():
-                        senddata = mf.upgradeSendFile(i + 1, f[i])  # 读文件从0开始, 包序号从1开始
+                    if i < self.mf.packnum:
+                        senddata = self.mf.upgradeSendFile(i)  # 读文件从0开始, 包序号从1开始
                         self.uplist["bmap"][i] = 1
                         print("升级ing, 当前包序号：", i)
                         socketServer.SocketSend(nSocket, senddata)
                         print(senddata)
                     if (i == 10) or (i > 10 and i >= n):
                         self.state = 0 # 手动
-                    elif (i >= mf.upgradeTotalPackNum()):
+                    elif (i >= self.mf.packnum):
                         self.state = 2 # 自动查漏包
 
 
@@ -109,7 +110,7 @@ if __name__ == '__main__':
     file = u'F:\Work\软件提交\TLY2821\V1.0.0.1\TLY2821-00-SW0000-190409-01\TLY2821-update-V01000099-190409.bin'
 
     # 读升级bin文件
-    f = ReadBinFile(file)
+    # f = ReadBinFile(file)
 
     '''
     recv = "{'ip':'221.178.127.9','port':'27339', 'recvData':{'Len':'0236','Cmd':'Read','SN':'12','DataTime':'190404095253','CRC':'FFFF','DataValue':{'04A00503':'594C#03#03F4#0003#12301f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001'}}}"
@@ -119,4 +120,4 @@ if __name__ == '__main__':
     '''
 
     su = socketupgrade()
-    su.upgradeProc(f)
+    su.upgradeProc()
