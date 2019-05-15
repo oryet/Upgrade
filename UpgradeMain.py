@@ -3,10 +3,9 @@
 import threading
 import queue
 import time
-from UpgradeReadfile import UpgradeReadfile as rf
 import socketServer
-from UpgradeMakeFrame import upgradeMakeFrame
-import UpgradeDealFrame as df
+from PublicLib.Upgrade.UpgradeMakeFrame import upgradeMakeFrame
+import PublicLib.Upgrade.UpgradeDealFrame as df
 
 class socketupgrade():
     def __init__(self):
@@ -105,19 +104,5 @@ class socketupgrade():
 
 
 if __name__ == '__main__':
-    # file = u'F://Work//微功率无线软件提交//NLY1502//HW V1.1_V1.1.0.2//NLY1502-02-SW1300-181210-02//IotMeter_V1.1.0.2(181210).bin'
-    # file = u'D://02 Ucos-II//03 系统//17 TLY2821//trunk//Project//IAR7.8//Debug//Exe//TLY2821_V1.0.0.99.bin'
-    file = u'F:\Work\软件提交\TLY2821\V1.0.0.1\TLY2821-00-SW0000-190409-01\TLY2821-update-V01000099-190409.bin'
-
-    # 读升级bin文件
-    # f = ReadBinFile(file)
-
-    '''
-    recv = "{'ip':'221.178.127.9','port':'27339', 'recvData':{'Len':'0236','Cmd':'Read','SN':'12','DataTime':'190404095253','CRC':'FFFF','DataValue':{'04A00503':'594C#03#03F4#0003#12301f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001'}}}"
-    bitmap = [0] * 1024
-    uplist = {"ip": "", "port": "", "bmap": bitmap}
-    upgradeRecvProc(recv, uplist=uplist)
-    '''
-
     su = socketupgrade()
     su.upgradeProc()
